@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import melons
@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 # A secret key is needed to use Flask sessioning features
 
-app.secret_key = 'this-should-be-something-unguessable'
+app.secret_key = '@i\xf7)t\xbe\x80\xbc\xebA\xc8\xb6\x9a#_\xcce\xb2\xd6\xa9Dl\xd3\xa9'
 
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
@@ -30,6 +30,9 @@ app.jinja_env.undefined = jinja2.StrictUndefined
 @app.route("/")
 def index():
     """Return homepage."""
+
+    session['fav_number'] = 42
+    print session['fav_number']
 
     return render_template("homepage.html")
 
@@ -67,12 +70,17 @@ def show_shopping_cart():
     # - get the cart dictionary from the session
     # - create a list to hold melon objects and a variable to hold the total
     #   cost of the order
+    melon_order = []
+    total_cost = 0
+
     # - loop over the cart dictionary, and for each melon id:
     #    - get the corresponding Melon object
     #    - compute the total cost for that type of melon
     #    - add this to the order total
     #    - add quantity and total cost as attributes on the Melon object
     #    - add the Melon object to the list created above
+    #for item in shopping_cart:
+
     # - pass the total order cost and the list of Melon objects to the template
     #
     # Make sure your function can also handle the case wherein no cart has
@@ -95,8 +103,10 @@ def add_to_cart(melon_id):
     #
     # - check if a "cart" exists in the session, and create one (an empty
     #   dictionary keyed to the string "cart") if not
+    session["cart"] = session.get("cart", {})
     # - check if the desired melon id is the cart, and if not, put it in
     # - increment the count for that melon id by 1
+    session["cart"][melon_id] = session["cart"].get(melon_id, 0) + 1
     # - flash a success message
     # - redirect the user to the cart page
 
