@@ -112,7 +112,7 @@ def add_to_cart(melon_id):
     flash("{} added to cart.".format(melon.common_name))
     # - redirect the user to the cart page
 
-    return render_template("cart.html")
+    return redirect("/cart")
 
 
 @app.route("/login", methods=["GET"])
